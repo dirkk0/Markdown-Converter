@@ -45,23 +45,23 @@ def convertText(c):
     for l in c:
       i += 1
       if 0 == 0:
-	# print l[:30]
-	k = l
-	if l[0:1]=='*':
-	  isList = 1
-	if l == '':
-	  isList = 0
+        # print l[:30]
+        k = l
+        if l[0:1]=='*':
+          isList = 1
+        if l == '':
+          isList = 0
 
-	if l[0:1] == '>':
+        if l[0:1] == '>':
           if isQuote==0:
-	    k = '{quote}\n'+k[1:]
+            k = '{quote}\n'+k[1:]
             isQuote = 1
           else:
-	    k = k[1:]
+            k = k[1:]
 
 
-	if isList == 0:
-	  if isCode == 1:
+        if isList == 0:
+          if isCode == 1:
             if l[0:1] == ' ' or l[0:1]=='\t':
               pass
             else:
@@ -69,9 +69,9 @@ def convertText(c):
               isCode = 0
 
           else:
-	    if l[0:1]==' ' or l[0:1]=='\t':
-	      k = '{code}\n'+k
-	      isCode = 1
+            if l[0:1]==' ' or l[0:1]=='\t':
+              k = '{code}\n'+k
+              isCode = 1
         else:
            if l[0:4]=='\t\t\t*':
              k = '****' + l[4:]
@@ -80,25 +80,25 @@ def convertText(c):
            if l[0:2]=='\t*':
              k = '**' + l[2:]
 
-	for w in words:
-	  # print l[:len(w[0])]
-	  if l[:len(w[0])] == w[0]:
-	    k = w[1]+l[len(w[0]):]
+        for w in words:
+          # print l[:len(w[0])]
+          if l[:len(w[0])] == w[0]:
+            k = w[1]+l[len(w[0]):]
 
 
         if l[0:1] != '>' and isQuote == 1:
-	  k = '{quote}\n'+k
+          k = '{quote}\n'+k
           isQuote = 0
 
 
         if l[0:3] != '| -':
-	  newContent.append(k)
+          newContent.append(k)
 
-	# print k
-	i# newContent.append(k)
+        # print k
+        i# newContent.append(k)
 
     return '\n'.join(newContent)
-    
+
 
 
 def convertFile(filename):
@@ -109,12 +109,35 @@ def convertFile(filename):
 
 
 
-def convertAllFiles():
+def convertAllFiles(dirname):
   f_counter = 0
-  for f in os.listdir('.'):
-    if f[-3:] =='.md':
-      f_counter += 1
-      convertFile(f)
+  for f in os.listdir(dirname):
+
+      fname = os.path.join(dirname,f)
+
+      if fname[-3:] =='.md':
+          f_counter += 1
+          convertFile(fname)
+
+
+if __name__=='__main__':
+
+
+    if len(sys.argv)<2:
+        convertAllFiles(".")
+        sys.exit()
+
+    infile = sys.argv[1]
+
+    if not os.path.exists(infile):
+        sys.stderr("%s does not exist!" %infile)
+        sys.exit(15)
+
+    if os.path.isdir(infile):
+        convertAllFiles(infile)
+
+    else:
+        convertFile(infile)
 
 
 # convertFile('WEB-DEVELOPMENT-CSS.md')
