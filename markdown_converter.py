@@ -2,12 +2,7 @@
 
 import re, os, sys
 
-# f_counter = 0
-# for f in os.listdir('.'):
 
-#  if f[-3:] =='.md':
-#    f_counter += 1
-#    print f
 
 def convertText(c):
     # replace all links
@@ -140,7 +135,5 @@ if __name__=='__main__':
         convertFile(infile)
 
 
-# convertFile('WEB-DEVELOPMENT-CSS.md')
-# convertAllFiles()
 
 
