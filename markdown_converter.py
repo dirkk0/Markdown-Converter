@@ -34,6 +34,7 @@ def convertText(c):
 
     i = 0
     isCode = 0
+    indent = 0
     isQuote = 0
     isList = 0
 
@@ -58,14 +59,15 @@ def convertText(c):
         if isList == 0:
           if isCode == 1:
             if l[0:1] == ' ' or l[0:1]=='\t':
-              pass
+              k = k[indent:]  
             else:
               k = '{code}\n'+k
               isCode = 0
-
+              indent = -1
           else:
             if l[0:1]==' ' or l[0:1]=='\t':
-              k = '{code}\n'+k
+              indent = len(k)-len(k.lstrip())
+              k = '{code}\n'+k[indent:]              
               isCode = 1
         else:
            if l[0:4]=='\t\t\t*':
@@ -133,7 +135,5 @@ if __name__=='__main__':
 
     else:
         convertFile(infile)
-
-
 
 
