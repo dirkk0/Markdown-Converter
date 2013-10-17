@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import re, os, sys
-
+from optparse import OptionParser
 
 
 def convertText(c):
@@ -98,15 +98,18 @@ def convertText(c):
 
 
 
-def convertFile(filename):
-  old_content = open(filename, 'r').read()
-  new_content = convertText(old_content)
-  open(filename+'.txt','w').write(new_content)
-  print "converted",filename
+def convertFile(filename,output_dir):
+    old_content = open(filename, 'r').read()
+    new_content = convertText(old_content)
+    if output_dir != None:
+        open('%s/%s.txt' % (output_dir,filename),'w').write(new_content)
+    else:
+        open(filename+'.txt','w').write(new_content)
+    print "converted",filename
 
 
 
-def convertAllFiles(dirname):
+def convertAllFiles(dirname,output_dir):
   f_counter = 0
   for f in os.listdir(dirname):
 
@@ -114,26 +117,35 @@ def convertAllFiles(dirname):
 
       if fname[-3:] =='.md':
           f_counter += 1
-          convertFile(fname)
+          convertFile(fname,output_dir)
 
+def init_options():
+    usage="%prog [options] input_files.txt"
+    parser = OptionParser(usage)
+    parser.add_option("--output_dir",dest="output_dir",help="Output all files to a specified directory")
+    return parser.parse_args()
 
 if __name__=='__main__':
 
+    (options,args) = init_options()
 
-    if len(sys.argv)<2:
-        convertAllFiles(".")
+    if options.output_dir != None and not os.path.exists(options.output_dir):
+        os.mkdir(options.output_dir)
+
+    if len(args) == 0:
+        convertAllFiles(".",options.output_dir)
         sys.exit()
 
-    infile = sys.argv[1]
+    infile = args[0]
 
     if not os.path.exists(infile):
         sys.stderr("%s does not exist!" %infile)
         sys.exit(15)
 
     if os.path.isdir(infile):
-        convertAllFiles(infile)
+        convertAllFiles(infile,options.output_dir)
 
     else:
-        convertFile(infile)
+        convertFile(infile,options.output_dir)
 
 
